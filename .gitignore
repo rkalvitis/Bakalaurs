@@ -9,6 +9,7 @@ __pycache__/
 #datasets
 OOC_image_dataset/
 synthetic_data/
+synthetic_test/
 
 
 # Distribution / packaging
