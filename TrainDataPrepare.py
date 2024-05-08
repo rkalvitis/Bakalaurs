@@ -5,6 +5,9 @@ from math import ceil
 from collections import defaultdict
 import csv
 import re
+from PIL import Image
+from torch.utils.data import Dataset
+import pandas as pd
 
 
 #function selects data from directory based on precentage passde to function, images are taken randomly 
@@ -111,3 +114,21 @@ def create_synthetic_csv_from_real_and_structure(real_csv_path, synthetic_root, 
         writer.writeheader()
         writer.writerows(synthetic_data)
 
+class CellDataset(Dataset):
+    def __init__(self, csv_file, img_dir, transform=None):
+        self.data = pd.read_csv(csv_file)
+        self.img_dir = img_dir
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        img_name = os.path.join(self.img_dir, f"{self.data.iloc[idx, 0]}.png")
+        image = Image.open(img_name).convert("RGB")
+        label = 1 if self.data.iloc[idx, -2] == "good" else 0
+
+        if self.transform:
+            image = self.transform(image)
+
+        return image, label
