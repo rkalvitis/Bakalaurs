@@ -11,7 +11,7 @@ import pandas as pd
 import torchvision.transforms as transforms
 
 #function selects data from directory based on precentage passde to function, images are taken randomly 
-def SelectDataByPercent(src_dir, dest_dir, percentage):
+def SelectDataByPercent(src_dir, dest_dir, percentage, randomSeed):
     # Create a mapping of subcategories to image paths
     data_map = defaultdict(lambda: {'good': [], 'bad': []})
     
@@ -37,8 +37,7 @@ def SelectDataByPercent(src_dir, dest_dir, percentage):
         num_good_to_copy = ceil(len(good_images) * (percentage / 100))
         num_bad_to_copy = ceil(len(bad_images) * (percentage / 100))
 
-        #TODO
-        #random.seed(10)
+        random.seed(randomSeed)
         # Randomly sample the specified percentage of images from each category
         chosen_good_images = random.sample(good_images, num_good_to_copy) if num_good_to_copy > 0 else []
         chosen_bad_images = random.sample(bad_images, num_bad_to_copy) if num_bad_to_copy > 0 else []
@@ -64,7 +63,7 @@ def create_synthetic_csv_from_real_and_structure(real_csv_path, synthetic_root, 
         headers = next(reader)
         headers = [header.strip() for header in headers]  # Strip spaces from headers
         
-        print(f"Headers in the CSV: {headers}")  # Debugging step
+        #print(f"Headers in the CSV: {headers}")  # Debugging step
         
         if 'imageID' not in headers:
             raise ValueError("CSV file does not have an 'imageID' column.")

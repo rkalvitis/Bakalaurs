@@ -28,14 +28,39 @@ def copy_directory(src_dir: str, dest_dir: str) -> None:
     # Copy the source directory into the destination directory
     shutil.copytree(src_dir, os.path.join(dest_dir, os.path.basename(src_dir)), dirs_exist_ok=True)
 
-    print(f"Copied '{src_dir}' to '{os.path.join(dest_dir, os.path.basename(src_dir))}' successfully.")
+    #print(f"Copied '{src_dir}' to '{os.path.join(dest_dir, os.path.basename(src_dir))}' successfully.")
+
+
+def delete_directory(path):
+    """
+    Deletes the specified directory along with all its contents.
+    
+    Args:
+    path (str): Path to the directory to be deleted.
+
+    Returns:
+    bool: True if the directory was successfully deleted, False otherwise.
+    """
+    # Check if the directory exists
+    if not os.path.isdir(path):
+        print("The specified path does not exist or is not a directory.")
+        return False
+
+    # Try to remove the directory and handle exceptions
+    try:
+        shutil.rmtree(path)
+        #print(f"Directory '{path}' has been deleted.")
+        return True
+    except Exception as e:
+        print(f"Failed to delete the directory: {e}")
+        return False
 
 def delete_file(file_path):
     """Delete a specific file if it exists."""
     if os.path.exists(file_path):
         try:
             os.remove(file_path)
-            print(f"Deleted: {file_path}")
+            #print(f"Deleted: {file_path}")
         except Exception as e:
             print(f"Error deleting {file_path}: {e}")
     else:
@@ -72,7 +97,7 @@ def convert_xlsx_to_csv(xlsx_file, csv_file):
     
     # If there's more than one sheet, prompt the user for which one to use
     if len(excel_data) > 1:
-        print(f"Available sheets: {', '.join(excel_data.keys())}")
+        #print(f"Available sheets: {', '.join(excel_data.keys())}")
         sheet_name = input("Please specify the sheet to convert: ")
     else:
         sheet_name = list(excel_data.keys())[0]  # Take the first and only sheet
@@ -103,7 +128,7 @@ def collect_image_paths(main_directory):
             image_name = os.path.basename(image_file).lower()
             image_paths[image_name] = (image_file, dataset_type)
 
-    print(f"Collected {len(image_paths)} image paths.")
+    #print(f"Collected {len(image_paths)} image paths.")
     return image_paths
 
 def split_datasets_by_actual_images(csv_path, main_directory, output_directory):
@@ -138,7 +163,7 @@ def split_datasets_by_actual_images(csv_path, main_directory, output_directory):
     df['dataset_type'] = df['imageID'].apply(get_dataset_type)
     df_filtered = df.dropna(subset=['dataset_type'])
 
-    print(f"Filtered dataset contains {len(df_filtered)} records.")
+    #print(f"Filtered dataset contains {len(df_filtered)} records.")
 
     # Split and save the datasets based on the type without adding the 'dataset_type' column
     for dataset_type in ['train', 'val', 'test']:
