@@ -142,10 +142,10 @@ def split_datasets_by_actual_images(csv_path, main_directory, output_directory):
 
     # Split and save the datasets based on the type without adding the 'dataset_type' column
     for dataset_type in ['train', 'val', 'test']:
-        finalOutputDir = os.path.join(output_directory, dataset_type)
+        #finalOutputDir = os.path.join(output_directory, dataset_type)
         dataset_df = df_filtered[df_filtered['dataset_type'] == dataset_type].drop(columns=['dataset_type'])
         if not dataset_df.empty:
-            output_path = os.path.join(finalOutputDir, f'{dataset_type}_dataset.csv')
+            output_path = os.path.join(output_directory, f'{dataset_type}_dataset.csv')
             dataset_df.to_csv(output_path, index=False)
             print(f"{dataset_type.capitalize()} data saved to {output_path}")
         else:

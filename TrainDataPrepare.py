@@ -5,10 +5,10 @@ from math import ceil
 from collections import defaultdict
 import csv
 import re
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from torch.utils.data import Dataset
 import pandas as pd
-
+import torchvision.transforms as transforms
 
 #function selects data from directory based on precentage passde to function, images are taken randomly 
 def SelectDataByPercent(src_dir, dest_dir, percentage):
@@ -36,7 +36,9 @@ def SelectDataByPercent(src_dir, dest_dir, percentage):
         # Calculate the number of images to copy per category based on percentage
         num_good_to_copy = ceil(len(good_images) * (percentage / 100))
         num_bad_to_copy = ceil(len(bad_images) * (percentage / 100))
-        
+
+        #TODO
+        #random.seed(10)
         # Randomly sample the specified percentage of images from each category
         chosen_good_images = random.sample(good_images, num_good_to_copy) if num_good_to_copy > 0 else []
         chosen_bad_images = random.sample(bad_images, num_bad_to_copy) if num_bad_to_copy > 0 else []
@@ -114,20 +116,55 @@ def create_synthetic_csv_from_real_and_structure(real_csv_path, synthetic_root, 
         writer.writeheader()
         writer.writerows(synthetic_data)
 
+
+def GetTransformer(height, width):
+    transform = transforms.Compose([
+        transforms.Resize((height, width)),  # EfficientNet B7 uses a larger input size
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+    return transform
+
+
+
 class CellDataset(Dataset):
-    def __init__(self, csv_file, img_dir, transform=None):
+    def __init__(self, csv_file, base_dir, transform=None):
+        """
+        Args:
+            csv_file (str): Path to the CSV file containing image metadata.
+            base_dir (str): Base directory containing the "train", "val", and "test" folders.
+            transform (callable, optional): A function/transform to apply to the images.
+        """
+        # Read the CSV file into a DataFrame
         self.data = pd.read_csv(csv_file)
-        self.img_dir = img_dir
+        self.base_dir = base_dir
         self.transform = transform
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.img_dir, f"{self.data.iloc[idx, 0]}.png")
-        image = Image.open(img_name).convert("RGB")
-        label = 1 if self.data.iloc[idx, -2] == "good" else 0
+        # Extract relevant information from the CSV file
+        img_id = self.data.iloc[idx, 0]
+        split = self.data.iloc[idx, 1]  # e.g., train, val, test
+        label = self.data.iloc[idx, -2]  # good or bad
+        cell_type = self.data.iloc[idx, 2]  # e.g., 'cell_type_A549'
+        days = self.data.iloc[idx, 3]  # e.g., '0-1_days'
 
+        # Construct the relative image path based on the folder hierarchy
+        img_path = os.path.join(self.base_dir, split, label, cell_type, days, f"{img_id}.png")
+
+        try:
+            # Attempt to load the image and convert it to RGB
+            image = Image.open(img_path).convert("RGB")
+        except (FileNotFoundError, UnidentifiedImageError) as e:
+            print(f"Error loading image {img_path}: {e}")
+            return None, None
+
+        # Transform the label to binary if "good" or "bad"
+        label = 1 if label == "good" else 0
+
+        # Apply transformations if any
         if self.transform:
             image = self.transform(image)
 
