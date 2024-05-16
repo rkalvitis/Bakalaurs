@@ -4,7 +4,7 @@ This is practical work for Bachelor's paper. Goal is to increase model accuracy 
 Model used for training: MobileNet v2 - https://huggingface.co/docs/timm/en/models/mobilenet-v2. Simmilar studies: https://www.mdpi.com/2306-5729/9/2/28. 
 
 # Setup
-1. Download synthetic datasets from __ and __.
+1. Download synthetic datasets from https://zenodo.org/records/11197341 and https://zenodo.org/records/11197532.
 2. Download real dataset from https://zenodo.org/records/10203721
 3. Place data in folders with same name without changing hierarhy.
 4. If goal is to generate diffrent synthetic datasets, you need to download diffustion model from https://github.com/AUTOMATIC1111/stable-diffusion-webui
