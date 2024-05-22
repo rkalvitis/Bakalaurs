@@ -42,6 +42,11 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
     #SYN_HALU = '0.15'
     #RANDOM_SEED = 20
 
+    folder_path = 'prepared_data'
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        # Remove the folder
+        hf.delete_directory(folder_path)
+
 
     if (PREPARE_DATA):
         #prepare csv
@@ -176,7 +181,7 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
         base_model,
         layers.GlobalAveragePooling2D(),
         layers.Dense(128, activation='relu'),
-        layers.Dropout(0.2),
+        layers.Dropout(0.5),
         layers.Dense(1, activation='sigmoid')  # For binary classification
         #layers.Dense(1)
     ])
@@ -196,9 +201,24 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
     history = model.fit(
         train_generator,
         validation_data=val_generator,
-        epochs=10,  # Set a higher initial value, since EarlyStopping will stop early if needed
+        epochs=75,  # Set a higher initial value, since EarlyStopping will stop early if needed
         callbacks=[early_stopping]
     )
+
+    import pickle
+    saveLocation = ''
+    if (SYN_HALU == '0'):
+        saveLocation = 'results/' + MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_Seed' + str(RANDOM_SEED) + '_training_history_1.pkl'
+    else:
+        saveLocation = 'results/'+ MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_denoising' +SYN_HALU+ '_Seed' + str(RANDOM_SEED) +'_training_history_1.pkl'
+
+    history_dict = history.history
+
+    # Save the history.history dict to a pickle file
+    with open(saveLocation, 'wb') as f:
+        pickle.dump(history_dict, f)
+
+
     model.trainable = True
 
     model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.00001),
@@ -221,9 +241,9 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
     import pickle
     saveLocation = ''
     if (SYN_HALU == '0'):
-        saveLocation = 'results/' + MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_Seed' + str(RANDOM_SEED) + '_training_history.pkl'
+        saveLocation = 'results/' + MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_Seed' + str(RANDOM_SEED) + '_training_history_2.pkl'
     else:
-        saveLocation = 'results/' + MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_denoising' +SYN_HALU+ '_Seed' + str(RANDOM_SEED) +'_training_history.pkl'
+        saveLocation = 'results/'+ MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_denoising' +SYN_HALU+ '_Seed' + str(RANDOM_SEED) +'_training_history_2.pkl'
 
     history_dict = history.history
     history_dict['test_loss'] = test_loss
@@ -237,7 +257,7 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
     if (SYN_HALU == '0'):
         modelSave = 'results/' +MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) +'_Seed' + str(RANDOM_SEED) +'_modelSave.keras'
     else:
-        modelSave = 'results/' +MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_denoising' +SYN_HALU+ '_Seed' + str(RANDOM_SEED) +'_modelSave.keras'
+        modelSave = 'results/'+MODEL_NAME + '_RD'  + str(REAL_DATA_PERCENT) + '_SD' + str(SYNTHETIC_DATA_PERCENT) + '_denoising' +SYN_HALU+ '_Seed' + str(RANDOM_SEED) +'_modelSave.keras'
     model.save(modelSave)
 
     # import pickle

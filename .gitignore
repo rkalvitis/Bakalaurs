@@ -7,14 +7,24 @@ __pycache__/
 *.so
 
 #datasets
-OOC_image_dataset/
+#OOC_image_dataset/
 synthetic_data/
-synthetic_data_0.1/
+#synthetic_data_0.1/
 synthetic_test/
-synthetic_data_0.15/
+#synthetic_data_0.15/
 prepared_data/
 synthetic_data_0.1.zip
 DataSetArchive/
+results/
+
+
+OOC_image_dataset/train/
+OOC_image_dataset/val/
+OOC_image_dataset/test/
+
+synthetic_data_0.15/train/
+
+synthetic_data_0.1/train/
 
 
 # Distribution / packaging
