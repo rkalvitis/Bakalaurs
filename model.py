@@ -45,6 +45,7 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
     folder_path = 'prepared_data'
     if os.path.exists(folder_path) and os.path.isdir(folder_path):
         # Remove the folder
+        print(f"Folder '{folder_path}' has been deleted.")
         hf.delete_directory(folder_path)
 
 
