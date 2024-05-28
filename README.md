@@ -30,36 +30,4 @@ Modeļi ar kurus vajadzētu izmēģināt:
 sintētisko datu ģenerēšana - https://stability.ai/ 
 
 
-Titullapa
-Anotācija/Abstract
-Saturs
-Apzīmējumu saraksts
-Ievads
-2. Apraksts par OOC
-    kapec biomedicinas atteli ir sarezgiti
-    uzrakstit teoriju par ooc organ on chip
-    MI pielietojums medicina - ooc
-
-1. Sintētiskie dati
-    Kursa darbs
-    detalizēt aprakstit sintetiko datu generēšanas metodes, forumas u.c. lietas
-
-    
-3. Sintētisko datu ģenerēšana
-    Reālās datu kopas apraksts
-    Stable diffusion vs generative adversarial network (viens ģenerē un viens cenšas atšķirt)
-    Metodes
-
-4. Modeļu apmācības process
-    Pre-trained modeļu apraksts (MobileNetV2, EfficientNetB7)
-    Izmantotā sistemātika
-
-Rezultāti un diskusija
-    stiprās un vājās puses - citas datu ģenerēšanas metodes, vai cita modeļa izmantošanu (EfficientNetB7) - mazak eksperimetus varētu izmantot
-    Mazjaudīgas ierīces, ko vieglāk var izmantot labratorijas
-Secinājumi
-Izmantotā literatūra un avoti
-Pielikumi
-
-
 

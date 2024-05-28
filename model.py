@@ -174,10 +174,6 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
                                 weights='imagenet'
     )
 
-
-    base_model.trainable = False
-    #transfer learning un fine tuning
-
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
@@ -187,22 +183,25 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
         #layers.Dense(1)
     ])
 
+    #transfer learning un fine tuning
+    model.trainable = False
+
     model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001),
                 loss='binary_crossentropy',
                 metrics=['accuracy'])
     #base model true
 
     early_stopping = EarlyStopping(
-        monitor='val_accuracy',  # Metric to monitor, 'val_loss' or 'val_accuracy' are common options
-        patience=10,          # Number of epochs to wait for an improvement before stopping
-        restore_best_weights=True,  # Restore weights from the epoch with the best monitored metric
-        verbose=1            # Verbosity level for logging the stopping action
+        monitor='val_accuracy',  
+        patience=10,          
+        restore_best_weights=True,  
+        verbose=1            
     )
 
     history = model.fit(
         train_generator,
         validation_data=val_generator,
-        epochs=75,  # Set a higher initial value, since EarlyStopping will stop early if needed
+        epochs=75,  
         callbacks=[early_stopping]
     )
 

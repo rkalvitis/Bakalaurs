@@ -80,9 +80,7 @@ def load_experiment_data(synData, denoising, seeds, repo_location, trainingRound
         # Assuming there might be multiple experiments per seed
         
         file_path = os.path.join(repo_location, file_pattern)
-        print(file_path)
         if not os.path.exists(file_path):
-            print(f"No more files found at {file_path}, stopping.")
             break  # Stop if file does not exist
         
         # Load the experiment data from the file
