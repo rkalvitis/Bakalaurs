@@ -174,6 +174,9 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
                                 weights='imagenet'
     )
 
+    #transfer learning un fine tuning
+    base_model.trainable = False
+    
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
@@ -183,8 +186,6 @@ def TrainOnMobileNetV2 (SIN_DIR, RANDOM_SEED, SYN_HALU = '0', SYNTHETIC_DATA_PER
         #layers.Dense(1)
     ])
 
-    #transfer learning un fine tuning
-    model.trainable = False
 
     model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001),
                 loss='binary_crossentropy',
